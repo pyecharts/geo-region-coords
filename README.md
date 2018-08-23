@@ -6,9 +6,9 @@
 
 ### pyecharts 自定义坐标
 
-在 [pyecharts](https://github.com/pyecharts/pyecharts) 中，Geo/Geolines 图需要定义地区坐标，由于全国地区众多且多重名，pyecharts 无法精确度较高的区域坐标。pyecharts 中提供自定义坐标的方式有两种：
+在 [pyecharts](https://github.com/pyecharts/pyecharts) 中，Geo/Geolines 图需要定义地区坐标，由于全国地区众多且多重名，pyecharts 无法精确度较高的区域坐标。pyecharts 中提供自定义坐标的方式有 4 种：
 
-1. 使用 `geo_cities_coords` 参数，字典类型，如 {'阿城': [126.58, 45.32],}
+1. **（推荐）** 使用 `geo_cities_coords` 参数，字典类型，如 {'阿城': [126.58, 45.32],}
 
     coords.txt
     ```
@@ -26,8 +26,31 @@
 
     **在 coords.txt 中查找对应关键字,复制到 `geo_cities_coords` 参数即可**
 
+2.  **（推荐）** 使用 `add_coordinate()` 方法提供一个自定义坐标
 
-2. *Hack* pyecharts 源代码，对应文件位于 `Lib/site-packages/pyecharts/datasets/city_coordinates.json` 具体路径根据操作系统和 Python 环境而定。
+    本质上 `geo_cities_coords` 内部就是调用 `add_coordinate()` 方法
+    ```
+    add_coordinate(self, name: six.text_type, longitude: float, latitude: float): -> None
+
+    example:
+        add_coordinate("某地", 100.0, 20.0)
+    ```
+
+3. **（推荐 V0.5.9+）** 使用 `add_coordinate_json()` 方法提供一个自定义坐标 JSON 文件
+    ```
+    add_coordinate_json(self, json_file: six.text_type): -> None
+ 
+    example:
+        add_coordinate_json("my_coords.json")
+
+    # my_coords.json
+    {
+        "某地": [100.0, 20.0],
+        ...
+    }
+    ```
+
+4. **（不推荐，这种操作方式一旦 pyecharts 更新，坐标会失效）** *Hack* pyecharts 源代码，对应文件位于 `Lib/site-packages/pyecharts/datasets/city_coordinates.json` 具体路径根据操作系统和 Python 环境而定。
 
     coords.json
     ```
